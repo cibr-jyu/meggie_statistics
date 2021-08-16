@@ -15,8 +15,9 @@ from meggie_statistics.actions.evoked_permutation_test.controller.evoked import 
 from meggie_statistics.utilities.dialogs.permutationTestDialogMain import PermutationTestDialog
 
 
-
 class PermutationTest(Action):
+    """ Runs permutation tests for evoked items.
+    """
 
     def run(self):
 

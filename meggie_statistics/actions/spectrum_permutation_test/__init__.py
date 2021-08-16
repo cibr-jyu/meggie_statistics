@@ -17,6 +17,8 @@ from meggie_statistics.utilities.dialogs.permutationTestDialogMain import Permut
 
 
 class PermutationTest(Action):
+    """ Runs permutation tests for spectrum items
+    """
 
     def run(self):
 

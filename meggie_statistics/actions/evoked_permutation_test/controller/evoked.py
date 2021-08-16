@@ -9,10 +9,10 @@ import matplotlib.pyplot as plt
 
 from meggie.utilities.plotting import color_cycle
 from meggie.utilities.channels import get_channels_by_type
-from meggie.utilities.stats import prepare_data_for_permutation
-from meggie.utilities.stats import permutation_analysis
-from meggie.utilities.stats import report_permutation_results
-from meggie.utilities.stats import plot_permutation_results
+from meggie_statistics.utilities.stats import prepare_data_for_permutation
+from meggie_statistics.utilities.stats import permutation_analysis
+from meggie_statistics.utilities.stats import report_permutation_results
+from meggie_statistics.utilities.stats import plot_permutation_results
 
 from meggie.utilities.units import get_unit
 

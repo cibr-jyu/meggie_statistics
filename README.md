@@ -1,6 +1,13 @@
-meggie\_statistics - statistics for Meggie
-==================
+# Statistics for Meggie
 
-Currently wraps permutation tests from mne to provide permutation tests for evokeds, spectrums and tfrs. 
+Adds permutation tests to all three core pipelines (spetrums, evoked analysis and induced analysis) of Meggie.
 
-Works with yet-to-be-released meggie==1.2.0.
+## Installation:
+
+1. Activate the meggie environment
+1. Install: python -m pip install meggie\_statistics
+
+## Usage:
+
+If everything went fine, meggie should now recognize the plugin and you can enable it from the settings.
+

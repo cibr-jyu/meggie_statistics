@@ -7,8 +7,6 @@ import mne
 import numpy as np
 import matplotlib.pyplot as plt
 
-import pandas as pd
-
 from meggie.utilities.plotting import color_cycle
 from meggie.utilities.channels import get_channels_by_type
 from meggie.utilities.units import get_power_unit

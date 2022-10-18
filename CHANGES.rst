@@ -1,10 +1,16 @@
 Changelog
 =========
 
-0.2.2 (unreleased)
+0.2.3 (unreleased)
 -----------------
 
 - nothing changed yet
+
+
+0.2.2 (2022-10-18)
+-----------------
+
+- matplotlib introduced breaking change to set_window_title
 
 0.2.1 (2021-08-20)
 -----------------

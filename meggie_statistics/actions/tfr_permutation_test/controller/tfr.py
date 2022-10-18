@@ -73,7 +73,7 @@ def run_permutation_test(experiment, window, selected_name, groups, time_limits,
                 ax.plot(times, Y, label=condition, color=colors[group_idx])
 
         fig.suptitle(title_template.format(cluster_idx+1, res_key, pvalue))
-        fig.canvas.set_window_title('Cluster time course')
+        fig.canvas.manager.set_window_title('Cluster time course')
 
         ax.legend()
         ax.set_xlabel('Time (s)')
@@ -105,7 +105,7 @@ def run_permutation_test(experiment, window, selected_name, groups, time_limits,
                 ax.plot(freqs, Y, label=condition, color=colors[group_idx])
 
         fig.suptitle(title_template.format(cluster_idx+1, res_key, pvalue))
-        fig.canvas.set_window_title('Cluster spectrum')
+        fig.canvas.manager.set_window_title('Cluster spectrum')
 
         ax.legend()
         ax.set_xlabel('Frequency (Hz)')
@@ -126,7 +126,7 @@ def run_permutation_test(experiment, window, selected_name, groups, time_limits,
                              contours=0)
 
         fig.suptitle(title_template.format(cluster_idx+1, res_key, pvalue))
-        fig.canvas.set_window_title('Cluster topomap')
+        fig.canvas.manager.set_window_title('Cluster topomap')
 
     plot_permutation_results(results, significance, window,
                              location_limits=location_limits,

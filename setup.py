@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='meggie_statistics',
-    version='0.2.1',
+    version='0.2.2',
     description='Statistics plugin for Meggie',
     license='BSD',
     packages=['meggie_statistics'],

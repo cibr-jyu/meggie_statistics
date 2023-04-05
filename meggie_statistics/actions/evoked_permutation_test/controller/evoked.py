@@ -92,8 +92,8 @@ def run_permutation_test(experiment, window, selected_name, groups, time_limits,
 
         fig, ax = plt.subplots()
         ch_type = location_limits[1]
-        mne.viz.plot_topomap(np.array(map_), info, vmin=0, vmax=1,
-                             cmap='Reds', axes=ax, ch_type=ch_type, 
+        mne.viz.plot_topomap(np.array(map_), info, vlim=(0, 1),
+                             cmap='Reds', axes=ax, ch_type=ch_type,
                              contours=0)
 
         fig.suptitle(title_template.format(cluster_idx+1, res_key, pvalue))

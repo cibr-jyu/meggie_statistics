@@ -1,11 +1,16 @@
 Changelog
 =========
 
-0.2.3 (unreleased)
+0.2.4 (unreleased)
 -----------------
 
 - nothing changed yet
 
+
+0.2.3 (unreleased)
+-----------------
+
+- Fix to work with meggie==1.5.0
 
 0.2.2 (2022-10-18)
 -----------------

@@ -1,13 +1,21 @@
 Changelog
 =========
 
-0.2.4 (unreleased)
+0.3.1 (unreleased)
 -----------------
 
 - nothing changed yet
 
+0.3.0 (2023-08-09)
+-----------------
 
-0.2.3 (unreleased)
+- Support channel groups as a spatial constraint.
+- Give a error message when only one participant in a group.
+- Give a more understandable error message when no freedom in any dimension to cluster
+- Fix slightly uncomfortable logic in prepare_data_for_permutation
+- Fix a error in factor_levels variable when more than two conditions
+
+0.2.3 (2023-04-05)
 -----------------
 
 - Fix to work with meggie==1.5.0

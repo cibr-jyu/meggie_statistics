@@ -21,8 +21,8 @@ def run_permutation_test(experiment, window, selected_name, groups, time_limits,
                          significance, n_permutations, design):
     """ Runs permutation test computation and reports the results.
     """
-    if location_limits[0] == "ch_name" and frequency_limits is not None and time_limits is not None:
-        raise Exception("Cannot run permutation tests with all location, frequency and time limits")
+    if location_limits[0] != "ch_type" and frequency_limits is not None and time_limits is not None:
+        raise Exception("These are cluster permutation tests. Cannot run with all location, frequency and time limits set.")
 
     tfr_item = experiment.active_subject.tfr[selected_name]
     conditions = list(tfr_item.content.keys())
@@ -33,6 +33,8 @@ def run_permutation_test(experiment, window, selected_name, groups, time_limits,
     chs_by_type = get_channels_by_type(tfr_item.info)
     if location_limits[0] == 'ch_type':
         ch_type = location_limits[1]
+    elif location_limits[0] == 'ch_group':
+        ch_type = location_limit[1][0]
     else:
         ch_type = [key for key, vals in chs_by_type.items() if location_limits[1] in vals][0]
 

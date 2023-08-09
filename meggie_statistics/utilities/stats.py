@@ -12,9 +12,9 @@ import scipy.stats
 import scipy
 
 from meggie.utilities.threading import threaded
+from meggie.utilities.channels import average_to_channel_groups
 from meggie.utilities.channels import get_channels_by_type
 from meggie.utilities.channels import pairless_grads
-from meggie.utilities.channels import clean_names
 from meggie.utilities.messaging import questionbox
 
 
@@ -70,15 +70,19 @@ def prepare_data_for_permutation(experiment, design, groups,
     conditions = list(meggie_item.content.keys())
     groups = OrderedDict(sorted(groups.items()))
 
+    for group_key, group in groups.items():
+        if len(group) <= 1:
+            raise Exception(f"Group {group_key} must have more than 1 subjects.")
+
     if location_limits[0] == 'ch_type':
         # find channels shared by all subjects
         ch_names = []
         for group_key, group_subjects in groups.items():
             for subject_name in group_subjects:
                 subject = experiment.subjects.get(subject_name)
-                meggie_item = getattr(subject, item_type).get(item_name)
-                if meggie_item:
-                    ch_names.append(tuple(meggie_item.ch_names))
+                sub_item = getattr(subject, item_type).get(item_name)
+                if sub_item:
+                    ch_names.append(tuple(sub_item.ch_names))
         common_ch_names = list(set.intersection(*map(set, ch_names)))
 
         # filter to selected channel type
@@ -101,12 +105,14 @@ def prepare_data_for_permutation(experiment, design, groups,
 
         # find adjacency matching adjacency
         adjacency, adjacency_ch_names = mne.channels.find_ch_adjacency(info, ch_type)
-        cleaned_common = clean_names(common_ch_names)
         kept_idxs = [idx for idx in range(adjacency.shape[0]) if
-                     adjacency_ch_names[idx] in cleaned_common]
+                     adjacency_ch_names[idx] in common_ch_names]
 
         adjacency_arr = adjacency.toarray()[kept_idxs][:, kept_idxs]
         adjacency = scipy.sparse.csr_matrix(adjacency_arr)
+    elif location_limits[0] == 'ch_group':
+        adjacency = scipy.sparse.csr_matrix([1])
+        info = meggie_item.info
     else:
         adjacency = scipy.sparse.csr_matrix([1])
         info = meggie_item.info
@@ -139,6 +145,22 @@ def prepare_data_for_permutation(experiment, design, groups,
                         ch_idx = ch_names.index(location_limits[1])
                         swapped = np.swapaxes(data, data_format.index('locations'), 0)
                         selected = data[ch_idx][np.newaxis, :]
+                        data = np.swapaxes(selected, data_format.index('locations'), 0)
+                    elif location_limits[0] == 'ch_group':
+                        ch_names = subject_item.ch_names
+                        swapped = np.swapaxes(data, data_format.index('locations'), 0)
+                        labels, averaged = average_to_channel_groups(
+                            data,
+                            info,
+                            ch_names,
+                            experiment.channel_groups
+                        )
+                        averaged_idx = [
+                            idx for idx, lbl in enumerate(labels) if
+                            lbl[0] == location_limits[1][0] and
+                            lbl[1] == location_limits[1][1]
+                        ][0]
+                        selected = averaged[averaged_idx][np.newaxis, :]
                         data = np.swapaxes(selected, data_format.index('locations'), 0)
                     elif location_limits[0] == 'ch_type':
                         # filter to channel type
@@ -190,6 +212,22 @@ def prepare_data_for_permutation(experiment, design, groups,
                         ch_idx = ch_names.index(location_limits[1])
                         swapped = np.swapaxes(data, data_format.index('locations'), 0)
                         selected = data[ch_idx][np.newaxis, :]
+                        data = np.swapaxes(selected, data_format.index('locations'), 0)
+                    elif location_limits[0] == 'ch_group':
+                        ch_names = subject_item.ch_names
+                        swapped = np.swapaxes(data, data_format.index('locations'), 0)
+                        labels, averaged = average_to_channel_groups(
+                            data,
+                            info,
+                            ch_names,
+                            experiment.channel_groups
+                        )
+                        averaged_idx = [
+                            idx for idx, lbl in enumerate(labels) if
+                            lbl[0] == location_limits[1][0] and
+                            lbl[1] == location_limits[1][1]
+                        ][0]
+                        selected = averaged[averaged_idx][np.newaxis, :]
                         data = np.swapaxes(selected, data_format.index('locations'), 0)
                     elif location_limits[0] == 'ch_type':
                         # filter to channel type
@@ -286,7 +324,7 @@ def permutation_analysis(data, design, conditions, groups, threshold, adjacency,
     else:
         for group_key, group in groups.items():
             X = data[group_key]
-            factor_levels, effects = [2], 'A'
+            factor_levels, effects = [len(conditions)], 'A'
             f_thresh = mne.stats.f_threshold_mway_rm(len(group), factor_levels, effects, threshold)
 
             # data before: (n_conditions, n_subjects, ..., n_locations)

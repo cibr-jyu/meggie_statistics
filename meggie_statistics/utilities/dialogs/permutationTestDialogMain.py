@@ -28,6 +28,24 @@ class PermutationTestDialog(QtWidgets.QDialog):
         self.handler = handler
         self.experiment = experiment
 
+        ch_types = get_channels_by_type(meggie_item.info).keys()
+        self.channel_group_options = []
+
+        # add eeg if relevant
+        if experiment.channel_groups.get('eeg') and 'eeg' in ch_types:
+            for ch_group_name, _ in experiment.channel_groups['eeg'].items():
+                self.channel_group_options.append(('eeg', ch_group_name))
+
+        # add grad if relevant
+        if experiment.channel_groups.get('meg') and 'grad' in ch_types:
+            for ch_group_name, _ in experiment.channel_groups['meg'].items():
+                self.channel_group_options.append(('grad', ch_group_name))
+
+        # add mag if relevant
+        if experiment.channel_groups.get('meg') and 'mag' in ch_types:
+            for ch_group_name, _ in experiment.channel_groups['meg'].items():
+                self.channel_group_options.append(('mag', ch_group_name))
+
         self.limit_frequency = limit_frequency
         self.limit_time = limit_time
         self.limit_channel = limit_channel
@@ -47,11 +65,12 @@ class PermutationTestDialog(QtWidgets.QDialog):
         if not limit_channel:
             self.ui.groupBoxChannel.hide()
         else:
-            ch_types = get_channels_by_type(meggie_item.info).keys()
             for ch_type in ch_types:
                 self.ui.comboBoxChannelType.addItem(ch_type)
             for ch_name in meggie_item.info['ch_names']:
                 self.ui.comboBoxChannelName.addItem(ch_name)
+            for ch_type, ch_group_name in self.channel_group_options:
+                self.ui.comboBoxChannelGroup.addItem(f"{ch_type} - {ch_group_name}")
 
         self.meggie_item = meggie_item
 
@@ -113,6 +132,10 @@ class PermutationTestDialog(QtWidgets.QDialog):
             location_limits = ('ch_type', self.ui.comboBoxChannelType.currentText())
         if self.limit_channel and self.ui.radioButtonChannelName.isChecked():
             location_limits = ('ch_name', self.ui.comboBoxChannelName.currentText())
+        if self.limit_channel and self.ui.radioButtonChannelGroup.isChecked():
+            idx = self.ui.comboBoxChannelGroup.currentIndex()
+            ch_group_choice = self.channel_group_options[idx]
+            location_limits = ('ch_group', ch_group_choice)
 
         threshold = self.ui.doubleSpinBoxClusterThreshold.value()
         significance = self.ui.doubleSpinBoxClusterSignificance.value()

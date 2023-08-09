@@ -40,7 +40,7 @@
         <x>0</x>
         <y>0</y>
         <width>466</width>
-        <height>751</height>
+        <height>885</height>
        </rect>
       </property>
       <property name="minimumSize">
@@ -72,10 +72,10 @@
              <double>1.000000000000000</double>
             </property>
             <property name="singleStep">
-             <double>0.010000000000000</double>
+             <double>0.001000000000000</double>
             </property>
             <property name="value">
-             <double>0.001000000000000</double>
+             <double>0.010000000000000</double>
             </property>
            </widget>
           </item>
@@ -115,7 +115,7 @@
              <double>1.000000000000000</double>
             </property>
             <property name="singleStep">
-             <double>0.010000000000000</double>
+             <double>0.001000000000000</double>
             </property>
             <property name="value">
              <double>0.050000000000000</double>
@@ -131,10 +131,10 @@
           <string>Limit channels:</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_3">
-          <item row="1" column="0">
-           <widget class="QRadioButton" name="radioButtonChannelName">
-            <property name="text">
-             <string>Channel:</string>
+          <item row="2" column="1">
+           <widget class="QComboBox" name="comboBoxChannelName">
+            <property name="enabled">
+             <bool>false</bool>
             </property>
            </widget>
           </item>
@@ -148,11 +148,29 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="1">
-           <widget class="QComboBox" name="comboBoxChannelName"/>
-          </item>
           <item row="0" column="1">
            <widget class="QComboBox" name="comboBoxChannelType"/>
+          </item>
+          <item row="2" column="0">
+           <widget class="QRadioButton" name="radioButtonChannelName">
+            <property name="text">
+             <string>Channel:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QRadioButton" name="radioButtonChannelGroup">
+            <property name="text">
+             <string>Channel group:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QComboBox" name="comboBoxChannelGroup">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -165,6 +183,9 @@
          <layout class="QGridLayout" name="gridLayout_5">
           <item row="0" column="2">
            <widget class="QDoubleSpinBox" name="doubleSpinBoxFrequencyFmin">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
             <property name="decimals">
              <number>3</number>
             </property>
@@ -212,6 +233,9 @@
           </item>
           <item row="1" column="2">
            <widget class="QDoubleSpinBox" name="doubleSpinBoxFrequencyFmax">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
             <property name="decimals">
              <number>3</number>
             </property>
@@ -256,6 +280,9 @@
          <layout class="QGridLayout" name="gridLayout_4">
           <item row="0" column="2">
            <widget class="QDoubleSpinBox" name="doubleSpinBoxTimeTmin">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
             <property name="decimals">
              <number>3</number>
             </property>
@@ -303,6 +330,9 @@
           </item>
           <item row="1" column="2">
            <widget class="QDoubleSpinBox" name="doubleSpinBoxTimeTmax">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
             <property name="decimals">
              <number>3</number>
             </property>
@@ -405,8 +435,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>116</x>
-     <y>197</y>
+     <x>403</x>
+     <y>705</y>
     </hint>
     <hint type="destinationlabel">
      <x>18</x>
@@ -421,12 +451,172 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>319</x>
-     <y>197</y>
+     <x>489</x>
+     <y>705</y>
     </hint>
     <hint type="destinationlabel">
      <x>47</x>
      <y>149</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButtonFrequencyDisabled</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>doubleSpinBoxFrequencyFmax</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>99</x>
+     <y>434</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>386</x>
+     <y>401</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButtonFrequencyDisabled</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>doubleSpinBoxFrequencyFmin</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>99</x>
+     <y>434</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>386</x>
+     <y>366</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButtonTimeDisabled</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>doubleSpinBoxTimeTmin</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>99</x>
+     <y>285</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>386</x>
+     <y>217</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButtonTimeDisabled</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>doubleSpinBoxTimeTmax</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>99</x>
+     <y>285</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>386</x>
+     <y>252</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButtonChannelType</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>comboBoxChannelGroup</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>135</x>
+     <y>67</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>350</x>
+     <y>101</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButtonChannelType</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>comboBoxChannelName</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>135</x>
+     <y>67</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>350</x>
+     <y>135</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButtonChannelGroup</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>comboBoxChannelType</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>135</x>
+     <y>101</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>350</x>
+     <y>67</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButtonChannelGroup</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>comboBoxChannelName</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>135</x>
+     <y>101</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>350</x>
+     <y>135</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButtonChannelName</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>comboBoxChannelGroup</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>135</x>
+     <y>135</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>350</x>
+     <y>101</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButtonChannelName</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>comboBoxChannelType</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>135</x>
+     <y>135</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>350</x>
+     <y>67</y>
     </hint>
    </hints>
   </connection>

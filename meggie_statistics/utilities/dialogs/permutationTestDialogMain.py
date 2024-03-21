@@ -1,26 +1,32 @@
 """ Contains a class for logic of the permutation test dialog.
 """
-import logging
 
 from PyQt5 import QtWidgets
 
 
 from meggie.utilities.channels import get_channels_by_type
 
-from meggie.utilities.messaging import exc_messagebox
 from meggie.utilities.messaging import messagebox
 
-from meggie_statistics.utilities.dialogs.permutationTestDialogUi import Ui_permutationTestDialog
+from meggie_statistics.utilities.dialogs.permutationTestDialogUi import (
+    Ui_permutationTestDialog,
+)
 from meggie.utilities.dialogs.groupSelectionDialogMain import GroupSelectionDialog
 
 
 class PermutationTestDialog(QtWidgets.QDialog):
-    """ Contains logic for the permutation test dialog.
-    """
+    """Contains logic for the permutation test dialog."""
 
-    def __init__(self, experiment, parent, handler, meggie_item,
-                 limit_frequency=False, limit_time=False, 
-                 limit_channel=True):
+    def __init__(
+        self,
+        experiment,
+        parent,
+        handler,
+        meggie_item,
+        limit_frequency=False,
+        limit_time=False,
+        limit_channel=True,
+    ):
         QtWidgets.QDialog.__init__(self, parent)
         self.ui = Ui_permutationTestDialog()
         self.ui.setupUi(self)
@@ -32,19 +38,19 @@ class PermutationTestDialog(QtWidgets.QDialog):
         self.channel_group_options = []
 
         # add eeg if relevant
-        if experiment.channel_groups.get('eeg') and 'eeg' in ch_types:
-            for ch_group_name, _ in experiment.channel_groups['eeg'].items():
-                self.channel_group_options.append(('eeg', ch_group_name))
+        if experiment.channel_groups.get("eeg") and "eeg" in ch_types:
+            for ch_group_name, _ in experiment.channel_groups["eeg"].items():
+                self.channel_group_options.append(("eeg", ch_group_name))
 
         # add grad if relevant
-        if experiment.channel_groups.get('meg') and 'grad' in ch_types:
-            for ch_group_name, _ in experiment.channel_groups['meg'].items():
-                self.channel_group_options.append(('grad', ch_group_name))
+        if experiment.channel_groups.get("meg") and "grad" in ch_types:
+            for ch_group_name, _ in experiment.channel_groups["meg"].items():
+                self.channel_group_options.append(("grad", ch_group_name))
 
         # add mag if relevant
-        if experiment.channel_groups.get('meg') and 'mag' in ch_types:
-            for ch_group_name, _ in experiment.channel_groups['meg'].items():
-                self.channel_group_options.append(('mag', ch_group_name))
+        if experiment.channel_groups.get("meg") and "mag" in ch_types:
+            for ch_group_name, _ in experiment.channel_groups["meg"].items():
+                self.channel_group_options.append(("mag", ch_group_name))
 
         self.limit_frequency = limit_frequency
         self.limit_time = limit_time
@@ -67,7 +73,7 @@ class PermutationTestDialog(QtWidgets.QDialog):
         else:
             for ch_type in ch_types:
                 self.ui.comboBoxChannelType.addItem(ch_type)
-            for ch_name in meggie_item.info['ch_names']:
+            for ch_name in meggie_item.info["ch_names"]:
                 self.ui.comboBoxChannelName.addItem(ch_name)
             for ch_type, ch_group_name in self.channel_group_options:
                 self.ui.comboBoxChannelGroup.addItem(f"{ch_type} - {ch_group_name}")
@@ -100,18 +106,23 @@ class PermutationTestDialog(QtWidgets.QDialog):
             return
 
         if self.ui.radioButtonWithinSubjects.isChecked():
-            design = 'within-subjects'
+            design = "within-subjects"
         else:
-            design = 'between-subjects'
+            design = "between-subjects"
 
-        if design == 'between-subjects' and len(self.groups) <= 1:
-            messagebox(self, "At least two groups are needed for between-subjects design")
+        if design == "between-subjects" and len(self.groups) <= 1:
+            messagebox(
+                self, "At least two groups are needed for between-subjects design"
+            )
             return
 
-        if design == 'within-subjects':
+        if design == "within-subjects":
             conditions = self.meggie_item.content.keys()
             if len(conditions) <= 1:
-                messagebox(self, "At least two conditions are needed for within-subjects design")
+                messagebox(
+                    self,
+                    "At least two conditions are needed for within-subjects design",
+                )
                 return
 
         time_limits = None
@@ -129,27 +140,27 @@ class PermutationTestDialog(QtWidgets.QDialog):
             frequency_limits = fmin, fmax
 
         if self.limit_channel and self.ui.radioButtonChannelType.isChecked():
-            location_limits = ('ch_type', self.ui.comboBoxChannelType.currentText())
+            location_limits = ("ch_type", self.ui.comboBoxChannelType.currentText())
         if self.limit_channel and self.ui.radioButtonChannelName.isChecked():
-            location_limits = ('ch_name', self.ui.comboBoxChannelName.currentText())
+            location_limits = ("ch_name", self.ui.comboBoxChannelName.currentText())
         if self.limit_channel and self.ui.radioButtonChannelGroup.isChecked():
             idx = self.ui.comboBoxChannelGroup.currentIndex()
             ch_group_choice = self.channel_group_options[idx]
-            location_limits = ('ch_group', ch_group_choice)
+            location_limits = ("ch_group", ch_group_choice)
 
         threshold = self.ui.doubleSpinBoxClusterThreshold.value()
         significance = self.ui.doubleSpinBoxClusterSignificance.value()
         n_permutations = self.ui.spinBoxNPermutations.value()
 
         params = {}
-        params['groups'] = self.groups
-        params['time_limits'] = time_limits
-        params['frequency_limits'] = frequency_limits
-        params['location_limits'] = location_limits
-        params['threshold'] = threshold
-        params['significance'] = significance
-        params['n_permutations'] = n_permutations
-        params['design'] = design
+        params["groups"] = self.groups
+        params["time_limits"] = time_limits
+        params["frequency_limits"] = frequency_limits
+        params["location_limits"] = location_limits
+        params["threshold"] = threshold
+        params["significance"] = significance
+        params["n_permutations"] = n_permutations
+        params["design"] = design
 
         self.handler(params)
         self.close()

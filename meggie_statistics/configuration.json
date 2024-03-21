@@ -1,6 +1,7 @@
 {
     "id": "meggie_statistics",
-    "name": "A plugin providing statistics from mne to Meggie",
+    "name": "Statistics",
+    "description": "Add permutation tests for spectrums, evokeds and TFR",
     "author": "CIBR",
     "tabs": [ 
         {

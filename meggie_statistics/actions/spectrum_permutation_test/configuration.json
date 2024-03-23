@@ -1,5 +1,6 @@
 {
     "id": "spectrum_permutation_test",
-    "name": "Run permutation tests",
+    "name": "Spectrum permutation tests",
+    "description": "Run permutation tests for spectrum objects.",
     "entry": "PermutationTest"
 }

@@ -77,6 +77,60 @@ def _prepare_channel_info(
     return common_ch_names, info, adjacency
 
 
+def _average_over_frequency(data, freqs, frequency_limits, data_format):
+    fmin_idx = np.where(freqs >= frequency_limits[0])[0][0]
+    fmax_idx = np.where(freqs <= frequency_limits[1])[0][-1]
+    swapped = np.swapaxes(data, data_format.index("freqs"), 0)
+    averaged = np.mean(swapped[fmin_idx:fmax_idx], axis=0)[np.newaxis, :]
+    return np.swapaxes(averaged, data_format.index("freqs"), 0)
+
+
+def _select_data_by_location(
+    data, info, location_limits, data_format, subject_item, common_ch_names, experiment
+):
+    if location_limits[0] == "ch_name":
+        ch_names = subject_item.ch_names
+        ch_idx = ch_names.index(location_limits[1])
+        swapped = np.swapaxes(data, data_format.index("locations"), 0)
+        selected = data[ch_idx][np.newaxis, :]
+        return np.swapaxes(selected, data_format.index("locations"), 0)
+
+    elif location_limits[0] == "ch_group":
+        ch_names = subject_item.ch_names
+        swapped = np.swapaxes(data, data_format.index("locations"), 0)
+        labels, averaged = average_to_channel_groups(
+            data, info, ch_names, experiment.channel_groups
+        )
+        averaged_idx = [
+            idx
+            for idx, lbl in enumerate(labels)
+            if lbl[0] == location_limits[1][0] and lbl[1] == location_limits[1][1]
+        ][0]
+        selected = averaged[averaged_idx][np.newaxis, :]
+        return np.swapaxes(selected, data_format.index("locations"), 0)
+
+    elif location_limits[0] == "ch_type":
+        # filter to channel type
+        ch_idxs = np.array(
+            [
+                ch_idx
+                for ch_idx, ch_name in enumerate(subject_item.info["ch_names"])
+                if ch_name in common_ch_names
+            ]
+        )
+        swapped = np.swapaxes(data, data_format.index("locations"), 0)
+        selected = swapped[ch_idxs]
+        return np.swapaxes(selected, data_format.index("locations"), 0)
+
+
+def _average_over_time(data, times, time_limits, data_format):
+    tmin_idx = np.where(times >= time_limits[0])[0][0]
+    tmax_idx = np.where(times <= time_limits[1])[0][-1]
+    swapped = np.swapaxes(data, data_format.index("times"), 0)
+    averaged = np.mean(swapped[tmin_idx:tmax_idx], axis=0)[np.newaxis, :]
+    return np.swapaxes(averaged, data_format.index("times"), 0)
+
+
 @threaded
 def prepare_data_for_permutation(
     experiment,
@@ -146,6 +200,7 @@ def prepare_data_for_permutation(
 
     final_data = {}
     if design == "between-subjects":
+
         for condition in conditions:
             cond_data = []
             for group in groups.values():
@@ -160,61 +215,26 @@ def prepare_data_for_permutation(
                         logging.getLogger("ui_logger").warning(message)
 
                     data = subject_item.data[condition]
+
                     if frequency_limits is not None:
-                        # average over the selected frequency range
-                        freqs = subject_item.freqs
-                        fmin_idx = np.where(freqs >= frequency_limits[0])[0][0]
-                        fmax_idx = np.where(freqs <= frequency_limits[1])[0][-1]
-                        swapped = np.swapaxes(data, data_format.index("freqs"), 0)
-                        averaged = np.mean(swapped[fmin_idx:fmax_idx], axis=0)[
-                            np.newaxis, :
-                        ]
-                        data = np.swapaxes(averaged, data_format.index("freqs"), 0)
-                    if location_limits[0] == "ch_name":
-                        # take the seleted location
-                        ch_names = subject_item.ch_names
-                        ch_idx = ch_names.index(location_limits[1])
-                        swapped = np.swapaxes(data, data_format.index("locations"), 0)
-                        selected = data[ch_idx][np.newaxis, :]
-                        data = np.swapaxes(selected, data_format.index("locations"), 0)
-                    elif location_limits[0] == "ch_group":
-                        ch_names = subject_item.ch_names
-                        swapped = np.swapaxes(data, data_format.index("locations"), 0)
-                        labels, averaged = average_to_channel_groups(
-                            data, info, ch_names, experiment.channel_groups
+                        data = _average_over_frequency(
+                            data, subject_item.freqs, frequency_limits, data_format
                         )
-                        averaged_idx = [
-                            idx
-                            for idx, lbl in enumerate(labels)
-                            if lbl[0] == location_limits[1][0]
-                            and lbl[1] == location_limits[1][1]
-                        ][0]
-                        selected = averaged[averaged_idx][np.newaxis, :]
-                        data = np.swapaxes(selected, data_format.index("locations"), 0)
-                    elif location_limits[0] == "ch_type":
-                        # filter to channel type
-                        ch_idxs = np.array(
-                            [
-                                ch_idx
-                                for ch_idx, ch_name in enumerate(
-                                    subject_item.info["ch_names"]
-                                )
-                                if ch_name in common_ch_names
-                            ]
-                        )
-                        swapped = np.swapaxes(data, data_format.index("locations"), 0)
-                        selected = data[ch_idxs]
-                        data = np.swapaxes(selected, data_format.index("locations"), 0)
+
+                    data = _select_data_by_location(
+                        data,
+                        info,
+                        location_limits,
+                        data_format,
+                        subject_item,
+                        common_ch_names,
+                        experiment,
+                    )
+
                     if time_limits is not None:
-                        # average over the selected temporal range
-                        times = subject_item.times
-                        tmin_idx = np.where(times >= time_limits[0])[0][0]
-                        tmax_idx = np.where(times <= time_limits[1])[0][-1]
-                        swapped = np.swapaxes(data, data_format.index("times"), 0)
-                        averaged = np.mean(swapped[tmin_idx:tmax_idx], axis=0)[
-                            np.newaxis, :
-                        ]
-                        data = np.swapaxes(averaged, data_format.index("times"), 0)
+                        data = _average_over_time(
+                            data, subject_item.times, time_limits, data_format
+                        )
 
                     # move locations dim to last place
                     data = np.rollaxis(data, data_format.index("locations"), data.ndim)
@@ -222,6 +242,7 @@ def prepare_data_for_permutation(
                     group_data.append(data)
                 cond_data.append(np.array(group_data))
             final_data[condition] = cond_data
+
     elif design == "within-subjects":
         for group_key, group in groups.items():
             group_data = []
@@ -236,60 +257,29 @@ def prepare_data_for_permutation(
 
                 cond_data = []
                 for condition_idx, condition in enumerate(conditions):
+
                     data = subject_item.data[condition]
+
                     if frequency_limits is not None:
-                        # average over the selected frequency range
-                        freqs = subject_item.freqs
-                        fmin_idx = np.where(freqs >= frequency_limits[0])[0][0]
-                        fmax_idx = np.where(freqs <= frequency_limits[1])[0][-1]
-                        swapped = np.swapaxes(data, data_format.index("freqs"), 0)
-                        averaged = np.mean(swapped[fmin_idx:fmax_idx], axis=0)[
-                            np.newaxis, :
-                        ]
-                        data = np.swapaxes(averaged, data_format.index("freqs"), 0)
-                    if location_limits[0] == "ch_name":
-                        # take the seleted location
-                        ch_names = subject_item.ch_names
-                        ch_idx = ch_names.index(location_limits[1])
-                        swapped = np.swapaxes(data, data_format.index("locations"), 0)
-                        selected = data[ch_idx][np.newaxis, :]
-                        data = np.swapaxes(selected, data_format.index("locations"), 0)
-                    elif location_limits[0] == "ch_group":
-                        ch_names = subject_item.ch_names
-                        swapped = np.swapaxes(data, data_format.index("locations"), 0)
-                        labels, averaged = average_to_channel_groups(
-                            data, info, ch_names, experiment.channel_groups
+                        data = _average_over_frequency(
+                            data, subject_item.freqs, frequency_limits, data_format
                         )
-                        averaged_idx = [
-                            idx
-                            for idx, lbl in enumerate(labels)
-                            if lbl[0] == location_limits[1][0]
-                            and lbl[1] == location_limits[1][1]
-                        ][0]
-                        selected = averaged[averaged_idx][np.newaxis, :]
-                        data = np.swapaxes(selected, data_format.index("locations"), 0)
-                    elif location_limits[0] == "ch_type":
-                        # filter to channel type
-                        ch_idxs = np.array(
-                            [
-                                ch_idx
-                                for ch_idx, ch_name in enumerate(subject_item.ch_names)
-                                if ch_name in common_ch_names
-                            ]
-                        )
-                        swapped = np.swapaxes(data, data_format.index("locations"), 0)
-                        selected = data[ch_idxs]
-                        data = np.swapaxes(selected, data_format.index("locations"), 0)
+
+                    data = _select_data_by_location(
+                        data,
+                        info,
+                        location_limits,
+                        data_format,
+                        subject_item,
+                        common_ch_names,
+                        experiment,
+                    )
+
                     if time_limits is not None:
-                        # average over the selected temporal range
-                        times = subject_item.times
-                        tmin_idx = np.where(times >= time_limits[0])[0][0]
-                        tmax_idx = np.where(times <= time_limits[1])[0][-1]
-                        swapped = np.swapaxes(data, data_format.index("times"), 0)
-                        averaged = np.mean(swapped[tmin_idx:tmax_idx], axis=0)[
-                            np.newaxis, :
-                        ]
-                        data = np.swapaxes(averaged, data_format.index("times"), 0)
+                        data = _average_over_time(
+                            data, subject_item.times, time_limits, data_format
+                        )
+
                     cond_data.append(data)
                 group_data.append(cond_data)
 

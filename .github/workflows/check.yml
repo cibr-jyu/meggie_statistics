@@ -27,7 +27,7 @@ jobs:
 
     - name: Install meggie_statistics for tests
       run: |
-        pip install .
+        pip install -e .
 
     - name: Check styles
       run: |

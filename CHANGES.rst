@@ -1,10 +1,18 @@
 Changelog
 =========
 
-0.3.1 (unreleased)
+0.3.2 (unreleased)
 -----------------
 
 - nothing changed yet
+
+
+0.3.1 (2024-03-23)
+-----------------
+
+- Add tests
+- Add metadata for actions and the plugin
+- Refactor
 
 0.3.0 (2023-08-09)
 -----------------

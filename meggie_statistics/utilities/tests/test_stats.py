@@ -1,6 +1,19 @@
 import tempfile
 
 import mne
+import meggie.utilities.threading
+
+
+def patched_threaded(func):
+    def decorated(*args, **kwargs):
+        kwargs.pop("do_meanwhile", None)
+        return func(*args, **kwargs)
+
+    return decorated
+
+
+meggie.utilities.threading.threaded = patched_threaded
+
 
 from meggie.datatypes.evoked.evoked import Evoked
 
@@ -50,7 +63,6 @@ def test_permutation_analysis():
             time_limits=time_limits,
             frequency_limits=None,
             data_format=("locations", "times"),
-            no_threading=True,
         )
 
         results = permutation_analysis(
@@ -61,7 +73,6 @@ def test_permutation_analysis():
             threshold=threshold,
             adjacency=adjacency,
             n_permutations=n_permutations,
-            no_threading=True,
             random_state=10,
         )
 

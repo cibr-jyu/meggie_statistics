@@ -1,5 +1,4 @@
-""" Contains generic functions for permutation test computations.
-"""
+"""Contains generic functions for permutation test computations."""
 
 import logging
 from collections import OrderedDict

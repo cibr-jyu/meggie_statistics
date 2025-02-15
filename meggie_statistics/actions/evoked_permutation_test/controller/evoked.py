@@ -1,5 +1,4 @@
-""" Contains controlling logic for the evoked permutation tests
-"""
+"""Contains controlling logic for the evoked permutation tests"""
 
 from collections import OrderedDict
 

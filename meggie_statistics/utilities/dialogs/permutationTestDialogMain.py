@@ -1,5 +1,4 @@
-""" Contains a class for logic of the permutation test dialog.
-"""
+"""Contains a class for logic of the permutation test dialog."""
 
 from PyQt5 import QtWidgets
 

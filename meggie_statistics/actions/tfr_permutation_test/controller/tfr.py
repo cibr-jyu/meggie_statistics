@@ -1,5 +1,4 @@
-""" Contains controlling logic for the tfr permutation tests
-"""
+"""Contains controlling logic for the tfr permutation tests"""
 
 from collections import OrderedDict
 

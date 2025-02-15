@@ -1,5 +1,4 @@
-""" Contains implementation for tfr permutation tests
-"""
+"""Contains implementation for tfr permutation tests"""
 
 from meggie.utilities.messaging import exc_messagebox
 
@@ -17,7 +16,7 @@ from meggie_statistics.utilities.dialogs.permutationTestDialogMain import (
 class PermutationTest(Action):
     """Runs permutation tests for TFR items."""
 
-    def run(self):
+    def run(self, params={}):
         try:
             selected_name = self.data["outputs"]["tfr"][0]
         except IndexError:

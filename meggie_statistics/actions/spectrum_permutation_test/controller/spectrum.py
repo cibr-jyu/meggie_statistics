@@ -1,5 +1,4 @@
-""" Contains controlling logic for the spectrum permutation tests.
-"""
+"""Contains controlling logic for the spectrum permutation tests."""
 
 from collections import OrderedDict
 

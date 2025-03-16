@@ -4,8 +4,8 @@ Adds permutation tests to all three core pipelines (spetrums, evoked analysis an
 
 ## Installation:
 
-1. Activate the meggie environment
-1. Install: python -m pip install meggie\_statistics
+1. Activate the existing meggie environment
+2. Install: python -m pip install meggie\_statistics
 
 ## Usage:
 

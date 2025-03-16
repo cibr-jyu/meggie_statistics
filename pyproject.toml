@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "meggie_statistics"
+version = "0.4.0"
+description = "Statistics plugin for Meggie"
+license = { text = "BSD" }
+dependencies = ["meggie>=1.9.0"]
+urls = { "Repository" = "https://github.com/cibr-jyu/meggie_statistics" }
+
+[project.optional-dependencies]
+dev = [
+    "black",
+    "pylama",
+    "pytest",
+    "pytest-qt",
+    "build",
+    "twine",
+]
+test = [
+    "black",
+    "pylama",
+    "pytest",
+    "pytest-qt",
+]

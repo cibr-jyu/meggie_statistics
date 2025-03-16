@@ -20,10 +20,12 @@ dev = [
     "pytest-qt",
     "build",
     "twine",
+    "setuptools",
 ]
 test = [
     "black",
     "pylama",
     "pytest",
     "pytest-qt",
+    "setuptools",
 ]

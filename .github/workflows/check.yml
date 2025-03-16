@@ -20,8 +20,6 @@ jobs:
 
     - name: Install meggie
       run: |
-        python -m pip install --upgrade pip
-        pip install -r https://raw.githubusercontent.com/cibr-jyu/meggie/master/requirements.txt
         pip install git+https://github.com/cibr-jyu/meggie.git
 
     - name: Install this package

@@ -1,11 +1,17 @@
 Changelog
 =========
 
-0.3.2 (unreleased)
+0.4.1 (unreleased)
 -----------------
 
 - nothing changed yet
 
+0.4.0 (2025-03-16)
+-----------------
+
+- Upgrade to meggie==1.9.0
+- Simplify testing
+- Migrate to pyproject.toml
 
 0.3.1 (2024-03-23)
 -----------------
